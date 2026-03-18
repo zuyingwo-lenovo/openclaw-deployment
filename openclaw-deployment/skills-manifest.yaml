@@ -1,0 +1,47 @@
+# OpenClaw Skills Manifest
+# This file defines the skills to be managed in the WSL2 environment.
+
+# Bundled skills are included with OpenClaw. We just ensure they are enabled in config.
+bundled_skills:
+  - name: "system"
+    enabled: true
+    notes: "Core system interactions"
+  - name: "fs"
+    enabled: true
+    notes: "File system operations"
+
+# Community skills to be installed via ClawHub or Git
+community_skills:
+  - name: "github"
+    source: "clawhub"
+    repo_or_registry: "github"
+    install_path: "~/.openclaw/skills"
+    enabled: true
+    required_binaries: ["gh", "git"]
+    notes: "GitHub CLI integration for PRs and issues"
+
+  - name: "postgres"
+    source: "clawhub"
+    repo_or_registry: "postgres"
+    install_path: "~/.openclaw/skills"
+    enabled: true
+    required_binaries: ["psql"]
+    notes: "Database management"
+
+# Optional/Experimental skills (Disabled by default)
+optional_skills:
+  - name: "docker"
+    source: "clawhub"
+    repo_or_registry: "docker"
+    install_path: "~/.openclaw/skills"
+    enabled: false
+    required_binaries: ["docker"]
+    notes: "Docker container management. Requires Docker Desktop with WSL2 integration."
+    
+  - name: "linear"
+    source: "clawhub"
+    repo_or_registry: "linear"
+    install_path: "~/.openclaw/skills"
+    enabled: false
+    required_binaries: []
+    notes: "TODO: Check stability of this skill in ClawHub before enabling."

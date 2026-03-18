@@ -1,0 +1,53 @@
+{
+  "gateway": {
+    "port": 18789
+  },
+  "tools": {
+    "profile": "full",
+    "allow": ["*"],
+    "exec": {
+      "applyPatch": {
+        "enabled": true,
+        "workspaceOnly": true
+      }
+    },
+    "web": {
+      "search": {
+        "enabled": true,
+        "maxResults": 5
+      },
+      "fetch": {
+        "enabled": true,
+        "maxCharsCap": 50000
+      }
+    }
+  },
+  "browser": {
+    "enabled": true,
+    "defaultProfile": "openclaw",
+    "headless": true,
+    "executablePath": "/usr/bin/chromium-browser",
+    "profiles": {
+      "openclaw": {
+        "cdpPort": 18800,
+        "color": "#FF4500"
+      }
+    }
+  },
+  "skills": {
+    "load": {
+      "extraDirs": ["~/openclaw-workspace/skills"]
+    },
+    "entries": {
+      "system": { "enabled": true },
+      "fs": { "enabled": true }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "sandbox": {
+        "enabled": false
+      }
+    }
+  }
+}
