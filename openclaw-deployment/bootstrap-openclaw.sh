@@ -84,9 +84,11 @@ else
     error "Gateway service failed to start. Check logs with: journalctl --user -u openclaw-gateway"
 fi
 
-# 8. Setup Chromium for OpenClaw-managed browser
-log "Ensuring Chromium is available for OpenClaw browser tool..."
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y chromium-browser
+# 8. Setup Chrome for OpenClaw-managed browser
+log "Ensuring native Google Chrome is available for OpenClaw browser tool..."
+wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y /tmp/chrome.deb
+rm /tmp/chrome.deb
 
 log "Bootstrap completed successfully."
 log "Next steps:"
