@@ -59,7 +59,7 @@ wsl --set-default-version 2 | Out-Null
 # 4. Configure systemd in WSL (Required for OpenClaw Gateway)
 Write-Log "Ensuring systemd is enabled in WSL..."
 $wslConfCommand = "if [ ! -f /etc/wsl.conf ] || ! grep -q 'systemd=true' /etc/wsl.conf; then echo -e '[boot]\nsystemd=true' | sudo tee -a /etc/wsl.conf > /dev/null; echo 'systemd enabled, requires restart'; fi"
-$sysdResult = wsl -d Ubuntu -- bash -c $wslConfCommand
+$sysdResult = wsl -d $DistroName -- bash -c $wslConfCommand
 if ($sysdResult -match "requires restart") {
     Write-Log "systemd was just enabled. Shutting down WSL to apply changes..." "WARN"
     wsl --shutdown
@@ -69,7 +69,8 @@ if ($sysdResult -match "requires restart") {
 
 # 5. Copy installation files to WSL
 Write-Log "Copying deployment assets to WSL..."
-$WslHome = "\\wsl$\Ubuntu\home\$(wsl -d Ubuntu -- bash -c 'whoami' | Out-String).Trim()"
+$who = (wsl.exe -d $DistroName -- bash -c 'whoami' | Out-String).Trim()
+$WslHome = "\\wsl.localhost\$DistroName\home\$who"
 $TargetDir = "$WslHome\openclaw-setup"
 
 if (-not (Test-Path $TargetDir)) {
@@ -85,12 +86,12 @@ Copy-Item -Path "$PSScriptRoot\.env.example" -Destination $TargetDir -Force
 Copy-Item -Path "$PSScriptRoot\openclaw.base.json" -Destination $TargetDir -Force
 
 # Convert line endings to LF just in case
-wsl -d Ubuntu -- bash -c "sudo apt-get update && sudo apt-get install -y dos2unix; dos2unix ~/openclaw-setup/*.sh" | Out-Null
-wsl -d Ubuntu -- bash -c "chmod +x ~/openclaw-setup/*.sh" | Out-Null
+wsl -d $DistroName -- bash -c "sudo apt-get update && sudo apt-get install -y dos2unix; dos2unix ~/openclaw-setup/*.sh" | Out-Null
+wsl -d $DistroName -- bash -c "chmod +x ~/openclaw-setup/*.sh" | Out-Null
 
 # 6. Execute WSL deployment script
 Write-Log "Executing WSL bootstrap script..."
-wsl -d Ubuntu -- bash -c "cd ~/openclaw-setup && ./bootstrap-openclaw.sh"
+wsl -d $DistroName -- bash -c "cd ~/openclaw-setup && ./bootstrap-openclaw.sh"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Log "WSL bootstrap script failed with exit code $LASTEXITCODE." "ERROR"
@@ -102,7 +103,7 @@ Write-Log "Setting up Windows Scheduled Task for OpenClaw Gateway auto-start..."
 $TaskName = "OpenClaw WSL Boot"
 $TaskExists = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
 if (-not $TaskExists) {
-    schtasks /create /tn $TaskName /tr "wsl.exe -d Ubuntu --exec /bin/true" /sc onstart /ru SYSTEM | Out-Null
+    schtasks /create /tn $TaskName /tr "wsl.exe -d $DistroName --exec /bin/true" /sc onstart /ru SYSTEM | Out-Null
     Write-Log "Scheduled task '$TaskName' created."
 } else {
     Write-Log "Scheduled task '$TaskName' already exists."

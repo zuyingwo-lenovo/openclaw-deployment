@@ -42,12 +42,5 @@
       "system": { "enabled": true },
       "fs": { "enabled": true }
     }
-  },
-  "agents": {
-    "defaults": {
-      "sandbox": {
-        "enabled": false
-      }
-    }
   }
 }

@@ -21,12 +21,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl wget git zip unzip jq ripgrep fd-find build-essential \
     libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
     libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
-    libgbm1 libasound2 ffmpeg imagemagick sqlite3 p7zip-full
+    libgbm1 libasound2t64 ffmpeg imagemagick sqlite3 p7zip-full
 
 # Link fdfind to fd if needed
 if ! command -v fd &> /dev/null && command -v fdfind &> /dev/null; then
     mkdir -p ~/.local/bin
-    ln -s $(command -v fdfind) ~/.local/bin/fd
+    ln -sf $(command -v fdfind) ~/.local/bin/fd
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
